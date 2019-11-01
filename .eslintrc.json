@@ -1,0 +1,44 @@
+{
+    "env": {
+        "commonjs": true,
+        "es6": true,
+        "node": true
+    },
+    "extends": "eslint:recommended",
+    "globals": {
+        "Atomics": "readonly",
+        "SharedArrayBuffer": "readonly"
+    },
+    "parserOptions": {
+        "ecmaVersion": 2018
+    },
+    "rules": {
+        "semi": "error",
+        "indent": ["error", 2, { "SwitchCase": 1 }],
+        "quotes": "error",
+        "no-unused-vars": "warn",
+        "keyword-spacing": "error",
+        "space-before-function-paren": "error",
+        "no-mixed-spaces-and-tabs": "error",
+        "eqeqeq": "error",
+        "space-infix-ops": "error",
+        "comma-spacing": "error",
+        "brace-style": "error",
+        "curly": "warn",
+        "no-multiple-empty-lines": "error",
+        "operator-linebreak": "error",
+        "block-spacing": "error",
+        "camelcase": "error",
+        "comma-dangle": "error",
+        "func-call-spacing": "error",
+        "key-spacing": "error",
+        "no-const-assign": "error",
+        "no-unexpected-multiline": "error",
+        "template-curly-spacing": "error",
+        "no-multi-spaces": "error",
+        "no-lone-blocks": "error",
+        "no-trailing-spaces": "error",
+        "eol-last": "error",
+        "no-async-promise-executor": "off"
+    }
+}
