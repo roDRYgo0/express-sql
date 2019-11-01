@@ -20,7 +20,7 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
 app.use(
   expressJwt({ secret: process.env.TOKEN_SECRET }).unless({
-    path: ["/auth", "/first"]
+    path: ["/auth/", "/first/"]
   })
 );
 // Core Routes
