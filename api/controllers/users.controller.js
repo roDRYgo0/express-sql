@@ -8,7 +8,7 @@ const bcrypt = require("bcrypt");
 
 class UsersController extends BaseController{
   constructor () {
-    super(Users);
+    super(Users, ["id", "name", "lastName", "email", "rol", "createdAt", "updatedAt"]);
     this.getFirstUser = this.getFirstUser.bind(this);
     this.createFirstUser = this.createFirstUser.bind(this);
     this.auth = this.auth.bind(this);
@@ -21,11 +21,11 @@ class UsersController extends BaseController{
       if (validate) {
         return res.status(400).send({ message: validate });
       }
-      console.log(body);
-      let user = await this._entity.findOne({ where: { email: body.email} });
+      let user = await this._entity.findOne({ where: { email: body.email}});
       if (user) {
         let authorization = await bcrypt.compare(body.password, user.password);
         if (authorization) {
+          delete user.dataValues.password;
           res.send({user, token: util.createToken(user)});
         } else {
           next(404);
@@ -60,6 +60,7 @@ class UsersController extends BaseController{
         return res.status(400).send({ message: validate });
       }
       let entity = await this._entity.create({...body});
+      delete entity.dataValues.password;
       res.send(entity);
     } catch (e) {
       next(e);

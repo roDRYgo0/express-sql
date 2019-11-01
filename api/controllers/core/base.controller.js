@@ -4,8 +4,9 @@ const util = require("../../util");
 const objectMapper = require("object-mapper");
 
 class BaseController {
-  constructor (entity) {
+  constructor (entity, attributes = null) {
     this._entity = entity;
+    this.options = {attributes};
     this.fetch = this.fetch.bind(this);
     this.show = this.show.bind(this);
     this.destroy = this.destroy.bind(this);
@@ -15,7 +16,7 @@ class BaseController {
 
   async fetch (req, res, next) {
     try {
-      let entities = await this._entity.fetch();
+      let entities = await this._entity.fetch(this.options);
       res.send(entities);
     } catch (e) {
       next(e);
@@ -24,7 +25,7 @@ class BaseController {
 
   async show (req, res, next) {
     try {
-      let entity = await this._entity.show(req.params.id);
+      let entity = await this._entity.show(req.params.id, this.options);
       if (entity) {
         res.send(entity);
       } else {
@@ -43,7 +44,7 @@ class BaseController {
       if (validate) {
         return res.status(400).send({ message: validate });
       }
-      let entity = await this._entity.create({...body});
+      let entity = await this._entity.create({...body}, this.options);
       res.send(entity);
     } catch (e) {
       next(e);
@@ -54,7 +55,7 @@ class BaseController {
     try {
       var body = await objectMapper(req.body, this.getModel());
       await this.deletePromise(body);
-      let entity = await this._entity.update(req.params.id, {...body});
+      let entity = await this._entity.update(req.params.id, {...body}, this.options);
       if (entity) {
         res.send(entity);
       } else {

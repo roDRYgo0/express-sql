@@ -13,6 +13,7 @@ class ProfileController extends BaseController {
     try {
       let entity = await this._entity.show(this.getId(req));
       if (entity) {
+        delete entity.dataValues.password;
         res.send(entity);
       } else {
         next(404);
@@ -29,6 +30,7 @@ class ProfileController extends BaseController {
       await this.deletePromise(body);
       let entity = await this._entity.update(this.getId(req), {...body});
       if (entity) {
+        delete entity.dataValues.password;
         res.send(entity);
       } else {
         next(404);
