@@ -10,7 +10,7 @@ yarn install
 
 ### Execute Migrations
 ```
-sequelize db:migrate
+npx sequelize db:migrate
 ```
 
 ### Compiles and hot-reloads for development
