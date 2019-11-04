@@ -19,8 +19,16 @@ exports.decoded = (authorization) => {
 
 
 exports.validatePassword = (password) => {
-  if (password.length <= 7 || password.length >= 80) {
+  if (password.length <= 7 || password.length >= 60) {
     return "La contraseña debe tener una longitud minima de 8 caracteres";
+  } else if (!/(?=.*\d)/.test(password)) {
+    return "La contraseña debe contener al menos un número";
+  } else if (!/(?=.*[a-z])/.test(password)) {
+    return "La contraseña debe contener al menos una letra minúscula";
+  } else if (!/(?=.*[A-Z])/.test(password)) {
+    return "La contraseña debe contener al menos una letra mayúscula";
+  } else if (!/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[$@$!.%*?&])[A-Za-z\d$@$!%*?&]{8,60}/.test(password)) {
+    return "La contraseña debe contener al menos un caracter especial";
   } else {
     return;
   }
@@ -57,14 +65,19 @@ exports.handlerRequest = async (body, req, model) => {
     if (!validateMessage) {
       var uniques = Object.values(model).map(att => att.unique ? att : undefined);
       uniques = uniques.filter(v => v !== undefined);
-      if (uniques.length && model.serviceName) {
-        validateMessage = uniques.map(async (element) => {
-          let found = await Services[model.serviceName]
-            .findOne({ where: { [element.key]: req[element.key] }, attributes: ["id"]});
-          if (found) {
-            return `Este ${element.key} ya existe`;
-          }
-        })[0];
+      if (uniques.length) {
+        if (model.serviceName) {
+          validateMessage = uniques.map(async (element) => {
+            let found = await Services[model.serviceName]
+              .findOne({ where: { [element.key]: req[element.key] }, attributes: ["id"]});
+            if (found) {
+              if (element.spanish) return `Este ${element.spanish.toLowerCase()} ya existe`;
+              else return "Spanish property is required in the model";
+            }
+          })[0];
+        } else {
+          validateMessage = "ServiceName is required in the model";
+        }
       }
     }
   }

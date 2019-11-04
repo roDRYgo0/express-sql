@@ -20,6 +20,7 @@ module.exports = {
   },
   email: {
     key: "email",
+    spanish: "Correo electrónico",
     transform: (email) => email ? email.toLowerCase() : undefined,
     unique: true,
     require: true
