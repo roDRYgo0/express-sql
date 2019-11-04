@@ -27,6 +27,7 @@ class BaseController {
 
   async fetch (req, res, next) {
     try {
+      // All entities are obtained and sent
       let entities = await this.service.fetch(this.options);
       res.send(entities);
     } catch (e) {
@@ -36,6 +37,7 @@ class BaseController {
 
   async show (req, res, next) {
     try {
+      // An entity is obtained by its id
       let entity = await this.service.show(req.params.id, this.options);
       if (entity) {
         res.send(entity);
@@ -49,12 +51,16 @@ class BaseController {
 
   async store (req, res, next) {
     try {
+      // The data sent by the user is mapped with the model
       const body = objectMapper(req.body, this.getModel());
+      // If there are async processes in the model transform, they are resolved
       await this.deletePromise(body);
+      // All data sent by the user is validated
       const validate = await util.handlerRequest(body, req.body, this.getModel());
       if (validate) {
         return res.status(400).send({ message: validate });
       }
+      // The entity is created
       let entity = await this.service.create({...body}, this.options);
       res.send(entity);
     } catch (e) {
@@ -64,8 +70,11 @@ class BaseController {
 
   async update (req, res, next) {
     try {
+      // The data sent by the user is mapped with the model
       var body = await objectMapper(req.body, this.getModel());
+      // If there are async processes in the model transform, they are resolved
       await this.deletePromise(body);
+      // The entity is updated
       let entity = await this.service.update(req.params.id, {...body}, this.options);
       if (entity) {
         res.send(entity);
@@ -79,6 +88,7 @@ class BaseController {
 
   async destroy (req, res, next) {
     try {
+      // The entity is deleted
       let admin = await this.service.destroy(req.params.id);
       if (admin) {
         res.status(201).send({ message: `${this.entity} eliminado` });
@@ -100,14 +110,14 @@ class BaseController {
   }
 
   async deletePromise (body) {
-    // Se obtienen keys
+    // Keys are obtained
     const keys = Object.keys(body);
-    // Se busca en los valores una promesa sin resolver
+    // The values are searched for an unresolved promise
     await Promise.all(Object.values(body).map(async (attr, index) => {
       if (attr.constructor.name === "Promise") {
-        // Si la encuentra la resuelve
+        // If he finds it, he solves it
         body[keys[index]] = await Promise.resolve(attr);
-        // Si es undefined borra el atributo del objeto
+        // If undefined, delete the object attribute
         if (body[keys[index]] === undefined) {
           delete body[keys[index]];
         }
