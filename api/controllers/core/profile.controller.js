@@ -1,17 +1,20 @@
 const BaseController = require("./base.controller");
-const { Users } = require("../../../db/services");
 
 const objectMapper = require("object-mapper");
 
 class ProfileController extends BaseController {
   constructor () {
-    super(Users);
+    super(
+      "Users",
+      null,
+      null
+    );
   }
 
   // Overwrite
   async show (req, res, next) {
     try {
-      let entity = await this._entity.show(this.getId(req));
+      let entity = await this.service.show(this.getId(req));
       if (entity) {
         delete entity.dataValues.password;
         res.send(entity);
@@ -28,7 +31,7 @@ class ProfileController extends BaseController {
     try {
       var body = await objectMapper(req.body, this.getModel());
       await this.deletePromise(body);
-      let entity = await this._entity.update(this.getId(req), {...body});
+      let entity = await this.service.update(this.getId(req), {...body});
       if (entity) {
         delete entity.dataValues.password;
         res.send(entity);

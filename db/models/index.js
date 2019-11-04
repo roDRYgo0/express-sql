@@ -6,11 +6,12 @@ const Sequelize = require("sequelize");
 const basename = path.basename(__filename);
 const env = process.env.NODE_ENV || "development";
 const config = require(__dirname + "/../../config/database.js")[env];
+
 const db = {};
 
 let sequelize;
-sequelize = new Sequelize(config);
 
+sequelize = new Sequelize(config);
 
 fs
   .readdirSync(__dirname)
@@ -30,5 +31,9 @@ Object.keys(db).forEach(modelName => {
 
 db.sequelize = sequelize;
 db.Sequelize = Sequelize;
+
+db.models = Object.keys(db);
+db.models.splice(db.models.indexOf("sequelize"), 1);
+db.models.splice(db.models.indexOf("Sequelize"), 1);
 
 module.exports = db;

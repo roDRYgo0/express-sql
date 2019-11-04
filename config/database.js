@@ -6,8 +6,7 @@ module.exports = {
     "database": process.env.DATABASE_DEV,
     "host": process.env.HOST,
     "dialect": process.env.DIALECT,
-    "logging": false,
-    "timestamps": false
+    "logging": false
   },
   "test": {
     "username": process.env.USER,

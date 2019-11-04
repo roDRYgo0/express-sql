@@ -24,7 +24,7 @@
         "space-infix-ops": "error",
         "comma-spacing": "error",
         "brace-style": "error",
-        "curly": "warn",
+        "curly": "off",
         "no-multiple-empty-lines": "error",
         "operator-linebreak": "error",
         "block-spacing": "error",
